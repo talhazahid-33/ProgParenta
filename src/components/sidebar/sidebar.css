@@ -1,0 +1,30 @@
+/* Sidebar.css */
+.sidebar {
+  width: 240px;
+  height: 100vh; /* Ensure the sidebar takes full viewport height */
+  background-color: #333; /* Dark background color */
+}
+
+  .sidebar .logo img {
+    width: 100px;
+    height: 100px;
+    border: 2px solid white;
+    padding: 5px;
+  }
+  
+  .nav-link {
+    font-size: 1.1rem;
+  }
+  
+  .nav-link:hover {
+    background-color: #444;
+    border-radius: 5px;
+  }
+  
+  .btn-light {
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px;
+  }
+  
+  

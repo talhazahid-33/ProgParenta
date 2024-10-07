@@ -1,0 +1,40 @@
+/* Home.css */
+.home-container {
+    width: 100%;
+  }
+  
+  /* Navbar styling */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #f5f5f5;
+  }
+  
+  .circle-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ccc;
+  }
+  
+  /* Section styling */
+  .section {
+    margin-bottom: 20px;
+  }
+  
+  .section-header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border-radius: 5px 5px 0 0;
+  }
+  
+  .section-body {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 0 0 5px 5px;
+  }
+  

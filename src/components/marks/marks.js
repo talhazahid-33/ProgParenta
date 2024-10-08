@@ -1,161 +1,242 @@
-import React, { useState } from "react";
-import "./marks.css"; // Custom CSS
-import AddMarksModal from "../modelForm/AddMarksModal";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "../attandance/attandance.css";
 
-function Marks() {
-  const [showModal, setShowModal] = useState(false);
-  const [marksData, setMarksData] = useState([
-    {
-      rollNo: "001",
-      name: "John Doe",
-      class: "Class 1",
-      subject: "Math",
-      obtainedMarks: 85,
-      averageMarks: 85,
-      totalMarks: 100,
-    },
-    {
-      rollNo: "002",
-      name: "Jane Smith",
-      class: "Class 1",
-      subject: "Math",
-      obtainedMarks: 90,
-      averageMarks: 90,
-      totalMarks: 100,
-    },
-  ]); // Mock data for demonstration
-  const [editIndex, setEditIndex] = useState(null); // State to keep track of which item is being edited
-  const [selectedMark, setSelectedMark] = useState(null); // State to store selected mark for editing
+const Attandance = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  const formattedDate = `${year}-${month}-${day}`;
 
-  // Function to handle adding or editing marks
-  const handleAddMarks = (newMarks) => {
-    if (editIndex !== null) {
-      // Update marks locally
-      const updatedMarksData = [...marksData];
-      updatedMarksData[editIndex] = newMarks;
-      setMarksData(updatedMarksData);
-      setEditIndex(null);
-      setSelectedMark(null); // Clear selected mark after editing
-    } else {
-      // Add new marks locally
-      setMarksData([...marksData, newMarks]);
+  const [students, setStudents] = useState([]);
+  const [marks, setMarks] = useState({});
+  const [date, setDate] = useState(formattedDate);
+  const [classes, setClasses] = useState([]);
+  const [selectedClass, setSelectedClass] = useState("");
+  const [subjects, setSubjects] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [totalMarks, setTotalMarks] = useState("");
+  const [testType, setTestType] = useState("");
+
+  useEffect(() => {
+    fetchClasses();
+    fetchSubjects();
+  }, []);
+
+  const fetchClasses = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/getAllClasses");
+      setClasses(response.data);
+    } catch (error) {
+      console.error("Error fetching classes:", error);
     }
-
-    setShowModal(false); // Close the modal after adding marks
+  };
+  const fetchSubjects = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/getAllSubjects");
+      console.log(response.data);
+      setSubjects(response.data);
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+    }
   };
 
-  // Handle edit
-  const handleEdit = (index) => {
-    setEditIndex(index); // Set the index of the marks to be edited
-    setSelectedMark(marksData[index]); // Set the selected mark data
-    setShowModal(true); // Open the modal for editing
+  const getStudentsByClass = async () => {
+    console.log("Selected Class:", selectedClass);
+    if (selectedClass === "" || selectedClass === null) return;
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/getStudentByClass",
+        {
+          Class: selectedClass,
+        }
+      );
+      if (response.status === 200) {
+        console.log("Students:", response.data);
+        setStudents(response.data);
+      } else {
+        console.log("No students found for this class.");
+      }
+    } catch (error) {
+      console.error("Error fetching students by class:", error);
+    }
   };
 
-  // Handle delete
-  const handleDelete = (index) => {
-    const updatedMarksData = marksData.filter((_, i) => i !== index); // Remove the selected marks locally
-    setMarksData(updatedMarksData);
+  const handleInputChange = (studentId, value) => {
+    setMarks({
+      ...marks,
+      [studentId]: value,
+    });
   };
 
-  return (
-    <div className="marks-container">
-      {/* Marks Navigation Bar */}
-      <div className="navbar bg-light p-3 rounded mb-4 d-flex align-items-center justify-content-between">
-        <h5 className="mb-0">Marks</h5>
-        <div className="search-bar">
-          <input
-            type="text"
-            className="form-control rounded-pill"
-            placeholder="Search Here"
-          />
-        </div>
-        <div className="icons d-flex">
-          <div
-            className="circle-icon bg-secondary mx-2"
-            onClick={() => setShowModal(true)} // Open modal on click
-          >
-            +
-          </div>
-        </div>
-      </div>
+  const addMarks = async ({
+    student_id,
+    subject_id,
+    test_type,
+    score,
+    max_score,
+    date,
+  }) => {
+    try {
+      const response = await axios.post("http://localhost:5000/addMarks", {
+        student_id,
+        subject_id,
+        test_type,
+        score,
+        max_score,
+        date,
+      });
 
-      {/* Filters Section */}
-      <div className="filter-section d-flex justify-content-between mb-3">
-        <div className="form-group">
-          <label>Class:</label>
-          <select className="form-control">
-            <option>Class 1</option>
-            <option>Class 2</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label>Section:</label>
-          <select className="form-control">
-            <option>Section A</option>
-            <option>Section B</option>
-          </select>
-        </div>
-        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
-          + Add
-        </button>
-      </div>
+      if (response.status === 201) {
+        console.log("Marks added successfully:", response.data);
+        return response.data; // Return the added marks data
+      } else {
+        console.error("Failed to add marks:", response.data);
+        return null; // Indicate failure
+      }
+    } catch (error) {
+      console.error("Error adding marks:", error);
+      return null; // Indicate failure
+    }
+  };
 
-      {/* Marks Table */}
-      {marksData.length > 0 ? (
-        <table className="table table-bordered">
-          <thead>
-            <tr>
-              <th>Roll No</th>
-              <th>Name</th>
-              <th>Class</th>
-              <th>Subject</th>
-              <th>Obtained Marks</th>
-              <th>Average Marks</th>
-              <th>Total Marks</th>
-              <th>Options</th>
-            </tr>
-          </thead>
-          <tbody>
-            {marksData.map((mark, index) => (
-              <tr key={index}>
-                <td>{mark.rollNo}</td>
-                <td>{mark.name}</td>
-                <td>{mark.class}</td>
-                <td>{mark.subject}</td>
-                <td>{mark.obtainedMarks}</td>
-                <td>{mark.averageMarks}</td>
-                <td>{mark.totalMarks}</td>
-                <td>
-                  <button
-                    className="btn btn-warning btn-sm"
-                    onClick={() => handleEdit(index)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm ml-2"
-                    onClick={() => handleDelete(index)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No marks available. Add some marks to get started.</p> // Message when no data
-      )}
+  const saveMarks = () => {
+    if (students.length === 0) {
+      alert("No student to mark.");
+      return;
+    }
+    if (testType === "" || totalMarks === "") {
+      alert("Test type and Total Marks are necessary");
+      return;
+    }
+    const subject_id = getSubjectIdByName(selectedSubject);
+    students.forEach((student) => {
+      const newMark = {
+        student_id: student.student_id,
+        subject_id: subject_id,
+        test_type: testType,
+        score:  marks[student.student_id] || 0,
+        max_score: totalMarks,
+        date: date,
+      };
 
-      {/* Add Marks Modal */}
-      <AddMarksModal
-        showModal={showModal}
-        handleClose={() => setShowModal(false)}
-        handleAddMarks={handleAddMarks}
-        selectedMark={selectedMark} // Pass the selected mark to the modal
-      />
-    </div>
-  );
+      addMarks(newMark);
+
+      console.log({
+        student_id: student.student_id,
+        date: date,
+        marks: marks[student.student_id] || 0,
+      });
+    });
+    setStudents([]);
+    alert("Marks Added Successfully");
+  };
+  function getSubjectIdByName( subjectName) {
+    const subject = subjects.find(sub => sub.Name === subjectName);
+    return subject ? subject.subject_id : "90"; 
 }
 
-export default Marks;
+
+  return (
+    <div className="attendance-container">
+      <header className="attendance-header">
+        <h2>Attendance</h2>
+        <input type="text" placeholder="Search Here" className="search-bar" />
+        <div className="user-avatar"></div>
+      </header>
+
+      <div className="filters">
+        <select
+          className="filter"
+          value={selectedClass}
+          onChange={(e) => setSelectedClass(e.target.value)}
+        >
+          <option value="">Class</option>
+          {classes.map((cls, index) => (
+            <option key={index} value={cls.Class}>
+              {cls.Class}
+            </option>
+          ))}
+        </select>
+        <select
+          className="filter"
+          value={selectedSubject}
+          onChange={(e) => setSelectedSubject(e.target.value)}
+        >
+          <option value="">subject</option>
+          {subjects.map((subject, index) => (
+            <option key={index} value={subject.Name}>
+              {subject.Name}
+            </option>
+          ))}
+        </select>
+        <input
+          type="date"
+          className="filter"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+        <button className="filter search-btn" onClick={getStudentsByClass}>
+          Search
+        </button>
+      </div>
+      <div className="marks-input-row">
+        <input
+          type="number"
+          placeholder="Total Marks"
+          value={totalMarks}
+          onChange={(e) => setTotalMarks(e.target.value)}
+          className="marks-input"
+        />
+        <input
+          type="text"
+          placeholder="Test Type"
+          value={testType}
+          className="marks-input"
+          onChange={(e) => setTestType(e.target.value)}
+        />
+        <br />
+        <br />
+      </div>
+
+      <table className="attendance-table">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Marks</th>
+          </tr>
+        </thead>
+        <tbody>
+          {students.map((student) => (
+            <tr key={student.student_id}>
+              <td>{student.student_id}</td>
+              <td>{student.rollno}</td>
+              <td>{`${student.firstname} ${student.lastname}`}</td>
+              <td>
+                <input
+                  type="number"
+                  value={marks[student.student_id] || ""}
+                  onChange={(e) =>
+                    handleInputChange(student.student_id, e.target.value)
+                  }
+                  placeholder="Enter Marks"
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <br />
+      <br />
+      <button onClick={saveMarks} className="filter search-btn">
+        Save Marks
+      </button>
+    </div>
+  );
+};
+
+export default Attandance;

@@ -23,7 +23,7 @@ function Sidebar() {
         </li>
 
         <li className="nav-item mb-3">
-          <NavLink to="/Attandance" className="nav-link text-white">
+          <NavLink to="/Attendance" className="nav-link text-white">
             Attandance
           </NavLink>
         </li>

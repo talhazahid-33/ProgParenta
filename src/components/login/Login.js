@@ -1,18 +1,40 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../middleware/authContext"; // Import useAuth
 import "./Login.css";
 import admn from "../../Assessts/admin.jpg";
 import logo from "../../Assessts/logo.png";
 
 function Login() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const { login } = useAuth(); // Access the login function from context
+
+  const [error, setError] = useState(""); // State to hold error messages
+  const [email, setEmail] = useState(""); // Change to email
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // For demonstration purposes, you can navigate to the home page after form submission.
-    navigate("/"); // Redirect to Home (frontend-only logic)
+
+    try {
+      const response = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }), // Send email instead of username
+      });
+
+      if (!response.ok) {
+        throw new Error("Invalid credentials");
+      }
+
+      const data = await response.json();
+      login();
+      navigate("/");
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   return (
@@ -25,16 +47,17 @@ function Login() {
           <div className="text-center mb-4">
             <img src={logo} alt="Logo" className="img-fluid logo" />
           </div>
-
+          {error && <div className="alert alert-danger">{error}</div>}{" "}
+          {/* Display error message */}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <input
-                type="text"
+                type="email" // Set the input type to email
                 className="form-control"
-                id="username"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="email" // Change the ID to email
+                placeholder="Email"
+                value={email} // Bind the email state
+                onChange={(e) => setEmail(e.target.value)} // Update the email state
               />
             </div>
 

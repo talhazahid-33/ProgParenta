@@ -1,153 +1,164 @@
 /* General layout styles */
 .meeting-container {
-    width: 100%;
-    padding: 20px;
-  }
-  
-  .meeting-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #007bff;
-    border-radius: 10px;
-    background-color: #f5f5f5;
-  }
-  
-  h2 {
-    margin: 0;
-  }
-  
-  .user-avatar {
-    width: 40px;
-    height: 40px;
-    background-color: #ccc;
-    border-radius: 50%;
-  }
-  
-  .meeting-requests {
-    margin-top: 20px;
-  }
-  
-  .meeting-requests h3 {
-    margin-bottom: 10px;
-  }
-  
-  .meeting-request {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #007bff;
-    color: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-  }
-  
-  .details-button {
-    background-color: #d3d3d3;
-    color: black;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .details-button:hover {
-    background-color: #b3b3b3;
-  }
-  
-  /* Modal styling */
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* Ensures modal is on top */
-  }
-  
-  .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 400px; /* Fixed width for modal */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: relative;
-    z-index: 1001;
-  }
-  
-  .modal-content h3 {
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .modal-details {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box; /* Ensure consistent sizing */
+}
+
+.meeting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #007bff;
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
+h2 {
+  margin: 0;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+.meeting-requests {
+  margin-top: 20px;
+}
+
+.meeting-requests h3 {
+  margin-bottom: 10px;
+}
+
+.meeting-request {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #007bff;
+  color: white;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.details-button {
+  background-color: #d3d3d3;
+  color: black;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.details-button:hover {
+  background-color: #b3b3b3;
+}
+
+/* Modal styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensures modal is on top */
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px; /* Limit modal width */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1001;
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.modal-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.modal-field {
+  width: 100%; /* Full width on small screens */
+}
+
+.modal-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.modal-field input,
+.modal-field textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+  box-sizing: border-box;
+}
+
+.modal-field textarea {
+  resize: none;
+  height: 60px;
+}
+
+/* Modal actions for buttons */
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.reject-button,
+.approve-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 45%; /* Ensures consistent button size */
+  transition: background-color 0.3s ease;
+}
+
+.reject-button {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+.approve-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.reject-button:hover {
+  background-color: #ff1a1a;
+}
+
+.approve-button:hover {
+  background-color: #218838;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
   .modal-field {
-    width: 48%;
+    width: 48%; /* Split fields into two columns on larger screens */
   }
-  
-  .modal-field label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .modal-field input, 
-  .modal-field textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f5f5f5;
-    box-sizing: border-box;
-  }
-  
-  .modal-field textarea {
-    resize: none;
-    height: 60px;
-  }
-  
-  /* Modal actions for buttons */
-  .modal-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  
-  .reject-button, .approve-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 45%; /* Ensures consistent button size */
-  }
-  
-  .reject-button {
-    background-color: #ff4d4d;
-    color: white;
-  }
-  
-  .approve-button {
-    background-color: #28a745;
-    color: white;
-  }
-  
-  .reject-button:hover {
-    background-color: #ff1a1a;
-  }
-  
-  .approve-button:hover {
-    background-color: #218838;
-  }
-  
+}

@@ -1,15 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // Import axios for API requests
 import "./meeting.css";
 
 const Meeting = () => {
-  const meetingRequests = [
-    { id: 1, title: "Computer Science" },
-    { id: 2, title: "Artificial Intelligence" },
-    { id: 3, title: "Grammatical Mistakes" },
-  ];
-
+  const [meetings, setMeetings] = useState([]); // State to store meeting records
   const [showModal, setShowModal] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState(null);
+
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:8000/getMeetings")
+  //     .then((response) => {
+  //       setMeetings(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching meetings:", error);
+  //     });
+  // }, []);
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/getMeetings", {
+        params: { teacherId: 1 },
+      })
+      .then((response) => {
+        setMeetings(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching meetings:", error);
+      });
+  }, []);
 
   const handleDetailsClick = (meeting) => {
     setSelectedMeeting(meeting);
@@ -30,12 +49,12 @@ const Meeting = () => {
 
       <section className="meeting-requests">
         <h3>Meeting Requests:</h3>
-        {meetingRequests.map((request) => (
-          <div className="meeting-request" key={request.id}>
-            <span>{request.title}</span>
+        {meetings.map((meeting) => (
+          <div className="meeting-request" key={meeting.meeting_id}>
+            <span>{meeting.meeting_topic}</span>
             <button
               className="details-button"
-              onClick={() => handleDetailsClick(request)}
+              onClick={() => handleDetailsClick(meeting)}
             >
               Details
             </button>
@@ -49,35 +68,40 @@ const Meeting = () => {
             <h3>Details</h3>
             <div className="modal-details">
               <div className="modal-field">
-                <label>Name:</label>
-                <input type="text" value="John Doe" disabled />
-              </div>
-              <div className="modal-field">
-                <label>Roll No:</label>
-                <input type="text" value="123" disabled />
-              </div>
-              <div className="modal-field">
-                <label>Class:</label>
-                <input type="text" value="10th" disabled />
-              </div>
-              <div className="modal-field">
-                <label>Section:</label>
-                <input type="text" value="A" disabled />
-              </div>
-              <div className="modal-field">
-                <label>Subject:</label>
-                <input type="text" value={selectedMeeting.title} disabled />
-              </div>
-              <div className="modal-field">
-                <label>Email:</label>
-                <input type="text" value="johndoe@example.com" disabled />
-              </div>
-              <div className="modal-field">
-                <label>Message:</label>
-                <textarea
-                  value="Please approve this meeting request."
+                <label>Meeting Date:</label>
+                <input
+                  type="text"
+                  value={selectedMeeting.meeting_date}
                   disabled
                 />
+              </div>
+              <div className="modal-field">
+                <label>Meeting Topic:</label>
+                <input
+                  type="text"
+                  value={selectedMeeting.meeting_topic}
+                  disabled
+                />
+              </div>
+              <div className="modal-field">
+                <label>Teacher ID:</label>
+                <input
+                  type="text"
+                  value={selectedMeeting.teacher_id}
+                  disabled
+                />
+              </div>
+              <div className="modal-field">
+                <label>Student ID:</label>
+                <input
+                  type="text"
+                  value={selectedMeeting.student_id}
+                  disabled
+                />
+              </div>
+              <div className="modal-field">
+                <label>Remarks:</label>
+                <textarea value={selectedMeeting.remarks} disabled />
               </div>
             </div>
             <div className="modal-actions">

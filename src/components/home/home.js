@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./home.css"; // Import custom CSS for Home page
 
+import { useNavigate } from 'react-router-dom';
+
 function Home() {
+  
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if(localStorage.getItem("auth") !== "true"){
+      navigate('/Login'); 
+    }
+    else{
+    localStorage.setItem("intendedPage","/");
+    }
+  })
   return (
     <div className="home-container">
       {/* Home Navigation Bar */}

@@ -13,7 +13,7 @@ import { AuthProvider, useAuth } from "./middleware/authContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const isAuthenticated  = localStorage.getItem("auth");
 
   return (
     <div className="d-flex">
@@ -54,7 +54,7 @@ function App() {
             }
           />
           <Route
-            path="/Attendance" // Corrected typo from "Attandance" to "Attendance"
+            path="/Attendance" 
             element={
               <PrivateRoute>
                 <Attendance />

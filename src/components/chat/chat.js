@@ -1,7 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+import { useNavigate } from 'react-router-dom';
 import "./chat.css";
 
 const Chat = () => {
+  
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(localStorage.getItem("auth") !== "true"){
+      navigate('/Login'); 
+    }
+    else{
+    localStorage.setItem("intendedPage","/Chat");
+    }
+  })
   const [activeUser, setActiveUser] = useState("Ahmad");
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState({

@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
+import { useNavigate } from 'react-router-dom';
 import "./attandance.css";
 
 const Attandance = () => {
+  
+  const navigate = useNavigate();
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0");
@@ -22,7 +26,13 @@ const Attandance = () => {
   const [newStudent, setNewStudent] = useState();
 
   useEffect(() => {
+    if(localStorage.getItem("auth") !== "true"){
+      navigate('/Login'); 
+
+    }
+    localStorage.setItem("intendedPage","/attendance");
     fetchClasses();
+
   }, []);
 
   const fetchClasses = async () => {
@@ -99,16 +109,6 @@ const Attandance = () => {
     setStudents([]);
     alert("Attendance Added Successfully");
   };
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewStudent({ ...newStudent, [name]: value });
-  };
-
-  const handleAddStudent = () => {
-    setStudents([...students, newStudent]);
-    setNewStudent(null);
-  };
-
   return (
     <div className="attendance-container">
       <header className="attendance-header">

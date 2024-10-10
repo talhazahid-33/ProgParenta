@@ -1,7 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+import { useNavigate } from 'react-router-dom';
 import "./library.css";
 
 const Library = () => {
+  
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if(localStorage.getItem("auth") !== "true"){
+      navigate('/Login'); 
+    }
+    else{
+    localStorage.setItem("intendedPage","/Library");
+    }
+
+  })
   const [bookName, setBookName] = useState("");
   const [category, setCategory] = useState("");
   const [file, setFile] = useState(null);

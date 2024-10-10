@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+
 import "../attandance/attandance.css";
 
 const Attandance = () => {
+
+  const navigate = useNavigate();
+
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0");
@@ -19,9 +24,18 @@ const Attandance = () => {
   const [totalMarks, setTotalMarks] = useState("");
   const [testType, setTestType] = useState("");
 
+  const testTypeOptions = ["Monthly","Weekly","FirstTerm", "SecondTerm","Finals"];
   useEffect(() => {
+    if(localStorage.getItem("auth") !== "true"){
+      navigate('/Login'); 
+    }
+    else{
+    localStorage.setItem("intendedPage","/Marks");
     fetchClasses();
     fetchSubjects();
+    }
+
+
   }, []);
 
   const fetchClasses = async () => {
@@ -65,6 +79,7 @@ const Attandance = () => {
   };
 
   const handleInputChange = (studentId, value) => {
+    if(value>0)
     setMarks({
       ...marks,
       [studentId]: value,
@@ -91,14 +106,14 @@ const Attandance = () => {
 
       if (response.status === 201) {
         console.log("Marks added successfully:", response.data);
-        return response.data; // Return the added marks data
+        return response.data; 
       } else {
         console.error("Failed to add marks:", response.data);
-        return null; // Indicate failure
+        return null;
       }
     } catch (error) {
       console.error("Error adding marks:", error);
-      return null; // Indicate failure
+      return null;
     }
   };
 
@@ -142,7 +157,7 @@ const Attandance = () => {
   return (
     <div className="attendance-container">
       <header className="attendance-header">
-        <h2>Attendance</h2>
+        <h2>Marks</h2>
         <input type="text" placeholder="Search Here" className="search-bar" />
         <div className="user-avatar"></div>
       </header>
@@ -187,16 +202,21 @@ const Attandance = () => {
           type="number"
           placeholder="Total Marks"
           value={totalMarks}
-          onChange={(e) => setTotalMarks(e.target.value)}
+          onChange={(e) =>{if(e.target.value >= 0) setTotalMarks(e.target.value)}}
           className="marks-input"
         />
-        <input
-          type="text"
-          placeholder="Test Type"
+       <select
+          className="filter"
           value={testType}
-          className="marks-input"
           onChange={(e) => setTestType(e.target.value)}
-        />
+        >
+          <option value="">Test Type</option>
+          {testTypeOptions.map((testType, index) => (
+            <option key={index} value={testType}>
+              {testType}
+            </option>
+          ))}
+        </select>
         <br />
         <br />
       </div>
@@ -207,7 +227,7 @@ const Attandance = () => {
             <th>Student ID</th>
             <th>Roll No</th>
             <th>Name</th>
-            <th>Marks</th>
+            <th>Obtained Marks</th>
           </tr>
         </thead>
         <tbody>

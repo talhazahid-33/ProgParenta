@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../middleware/authContext"; // Import useAuth
 import "./Login.css";
 import admn from "../../Assessts/admin.jpg";
@@ -7,12 +7,15 @@ import logo from "../../Assessts/logo.png";
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // Access the login function from context
+  const { login } = useAuth(); 
 
   const [error, setError] = useState(""); // State to hold error messages
   const [email, setEmail] = useState(""); // Change to email
   const [password, setPassword] = useState("");
 
+  useEffect(()=>{
+    checkSession();
+  },[])
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -22,7 +25,7 @@ function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }), // Send email instead of username
+        body: JSON.stringify({ email, password }), 
       });
 
       if (!response.ok) {
@@ -36,6 +39,15 @@ function Login() {
       setError(error.message);
     }
   };
+
+  const checkSession =()=>{
+    const intendedPage = localStorage.getItem("intendedPage");
+    const auth = localStorage.getItem('auth');
+    if(auth === "true" && intendedPage){
+      console.log(intendedPage)
+      navigate(intendedPage);
+    }
+  }
 
   return (
     <div className="login-container">

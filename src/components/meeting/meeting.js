@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // Import axios for API requests
 import "./meeting.css";
+import { useNavigate } from "react-router-dom";
 
 const Meeting = () => {
+  const navigate = useNavigate();
+
   const [meetings, setMeetings] = useState([]); // State to store meeting records
   const [showModal, setShowModal] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState(null);
@@ -18,7 +21,17 @@ const Meeting = () => {
   //     });
   // }, []);
   useEffect(() => {
-    axios
+    if (localStorage.getItem("auth") !== "true") {
+      navigate("/Login");
+    } else {
+      localStorage.setItem("intendedPage", "/Marks");
+    getMeetings();
+    }
+   
+  }, []);
+
+  const getMeetings = ()=>{
+     axios
       .get("http://localhost:8000/getMeetings", {
         params: { teacherId: 1 },
       })
@@ -28,7 +41,7 @@ const Meeting = () => {
       .catch((error) => {
         console.error("Error fetching meetings:", error);
       });
-  }, []);
+  }
 
   const handleDetailsClick = (meeting) => {
     setSelectedMeeting(meeting);

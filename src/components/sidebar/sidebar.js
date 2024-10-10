@@ -2,8 +2,24 @@ import React from "react";
 import "./sidebar.css";
 import Logo from "../../Assessts/logo.png";
 import { NavLink } from "react-router-dom";
+import { AuthProvider } from "../../middleware/authContext";
+import { useAuth } from "../../middleware/authContext";
+ import { useNavigate } from 'react-router-dom';
+
 
 function Sidebar() {
+  
+  const navigate = useNavigate();
+
+  const { logout } = useAuth();
+  const handleLogOut = ()=>{
+    localStorage.clear();
+    navigate('/Login')
+    logout();
+    
+
+
+  }
   return (
     <div className="sidebar d-flex flex-column align-items-center p-3 bg-dark text-white vh-100">
       <div className="logo mb-4">
@@ -47,7 +63,7 @@ function Sidebar() {
         </li>
       </ul>
       <div className="mt-auto">
-        <button className="btn btn-light">Logout</button>
+        <button className="btn btn-light" onClick={handleLogOut}>Logout</button>
       </div>
     </div>
   );

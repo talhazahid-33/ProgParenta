@@ -227,6 +227,7 @@ const Attandance = () => {
             <th>Student ID</th>
             <th>Roll No</th>
             <th>Name</th>
+            <th>Total Marks</th>
             <th>Obtained Marks</th>
           </tr>
         </thead>
@@ -236,6 +237,8 @@ const Attandance = () => {
               <td>{student.student_id}</td>
               <td>{student.rollno}</td>
               <td>{`${student.firstname} ${student.lastname}`}</td>
+              
+              <td>{totalMarks}</td>
               <td>
                 <input
                   type="number"

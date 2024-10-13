@@ -13,11 +13,11 @@ import { AuthProvider, useAuth } from "./middleware/authContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  const isAuthenticated  = localStorage.getItem("auth");
+  const isAuthenticated = localStorage.getItem("auth");
 
   return (
     <div className="d-flex">
-      {isAuthenticated && <Sidebar />}{" "}
+      {isAuthenticated && <Sidebar />}
       <div className="content p-4" style={{ width: "100%" }}>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -54,7 +54,7 @@ function App() {
             }
           />
           <Route
-            path="/Attendance" 
+            path="/Attendance"
             element={
               <PrivateRoute>
                 <Attendance />

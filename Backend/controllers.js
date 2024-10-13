@@ -1,27 +1,44 @@
 const pool = require("./db");
 
+// exports.login = async (req, res) => {
+//   console.log("Login Body : ", req.body);
+//   const { email, password } = req.body;
+
+//   if (!email || !password) {
+//     return res.status(400).json({ error: 'email and password are required' });
+//   }
+//   try {
+//     const query = 'SELECT * FROM TEACHER WHERE email = $1 AND password = $2';
+//     const result = await pool.query(query, [email, password]);
+
+//     if (result.rows.length > 0) {
+//       res.status(200).json({ message: 'Login successful' ,teacher:result.rows[0]});
+//     } else {
+//       res.status(401).json({ error: 'Invalid credentials' });
+//     }
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({ error: 'Server error' });
+//   }
+// };
 exports.login = async (req, res) => {
-  console.log("Login Body : ", req.body);
+  console.log("Login Body : ", req.body); // Check if req.body contains the correct data
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ error: 'email and password are required' });
+    return res.status(400).json({ error: "email and password are required" });
   }
-  try {
-    const query = 'SELECT * FROM TEACHER WHERE email = $1 AND password = $2';
-    const result = await pool.query(query, [email, password]);
 
-    if (result.rows.length > 0) {
-      res.status(200).json({ message: 'Login successful' ,teacher:result.rows[0]});
-    } else {
-      res.status(401).json({ error: 'Invalid credentials' });
-    }
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Server error' });
-  }
+  // Mock result for frontend testing without DB connection
+  res.status(200).json({
+    message: "Login successful",
+    teacher: {
+      id: 1, // Mock teacher ID
+      name: "John Doe", // Mock teacher name
+      email: email, // Return the email provided
+    },
+  });
 };
-
 
 exports.getMeetings = async (req, res) => {
   const { teacher_id } = req.body;
@@ -106,7 +123,7 @@ exports.addAttendance = async (req, res) => {
 };
 
 exports.getStudentsByClass = async (req, res) => {
-  const {  Class } = req.body;
+  const { Class } = req.body;
   if (!Class) {
     return res.status(400).json({ error: "Class name is required" });
   }
@@ -127,41 +144,48 @@ exports.getStudentsByClass = async (req, res) => {
 
 exports.getAllClasses = async (req, res) => {
   try {
-    const query = 'SELECT * FROM public.classes';
+    const query = "SELECT * FROM public.classes";
     const result = await pool.query(query);
 
     if (result.rows.length > 0) {
       res.status(200).json(result.rows);
     } else {
-      res.status(404).json({ message: 'No classes found' });
+      res.status(404).json({ message: "No classes found" });
     }
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-
 exports.getAllSubjects = async (req, res) => {
   try {
-    const query = 'SELECT * FROM public.subjects'; 
-    const result = await pool.query(query); 
+    const query = "SELECT * FROM public.subjects";
+    const result = await pool.query(query);
 
     if (result.rows.length > 0) {
-      res.status(200).json(result.rows); 
+      res.status(200).json(result.rows);
     } else {
-      res.status(404).json({ message: 'No subjects found' });
+      res.status(404).json({ message: "No subjects found" });
     }
   } catch (err) {
-    console.error(err.message); 
-    res.status(500).json({ error: 'Server error' });
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
 exports.addMarks = async (req, res) => {
-  const { student_id, subject_id, test_type, score, max_score, date } = req.body;
-  if (!student_id || !subject_id || !test_type || score === undefined || max_score === undefined || !date) {
-    return res.status(400).json({ error: 'All fields are required' });
+  const { student_id, subject_id, test_type, score, max_score, date } =
+    req.body;
+  if (
+    !student_id ||
+    !subject_id ||
+    !test_type ||
+    score === undefined ||
+    max_score === undefined ||
+    !date
+  ) {
+    return res.status(400).json({ error: "All fields are required" });
   }
   try {
     const query = `
@@ -169,9 +193,10 @@ exports.addMarks = async (req, res) => {
       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
     `;
     const values = [student_id, subject_id, test_type, score, max_score, date];
-    const result = await pool.query(query, values);    res.status(201).json(result.rows[0]);
+    const result = await pool.query(query, values);
+    res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: "Server error" });
   }
 };

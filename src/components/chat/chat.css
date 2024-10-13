@@ -1,6 +1,8 @@
 .chat-container {
     display: flex;
-    height: 100vh; /* Full viewport height to match the sidebar */
+    margin: 0;
+    padding: 0;
+    height: 96vh; /* Full viewport height to match the sidebar */
     width: 100%;
   }
   

@@ -7,25 +7,25 @@ import logo from "../../Assessts/logo.png";
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth(); 
+  const { login } = useAuth();
 
   const [error, setError] = useState(""); // State to hold error messages
   const [email, setEmail] = useState(""); // Change to email
   const [password, setPassword] = useState("");
 
-  useEffect(()=>{
+  useEffect(() => {
     checkSession();
-  },[])
+  }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/login", {
+      const response = await fetch("http://localhost:8000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }), 
+        body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
@@ -40,14 +40,14 @@ function Login() {
     }
   };
 
-  const checkSession =()=>{
+  const checkSession = () => {
     const intendedPage = localStorage.getItem("intendedPage");
-    const auth = localStorage.getItem('auth');
-    if(auth === "true" && intendedPage){
-      console.log(intendedPage)
+    const auth = localStorage.getItem("auth");
+    if (auth === "true" && intendedPage) {
+      console.log(intendedPage);
       navigate(intendedPage);
     }
-  }
+  };
 
   return (
     <div className="login-container">

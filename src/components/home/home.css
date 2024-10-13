@@ -38,3 +38,27 @@
     border-radius: 0 0 5px 5px;
   }
   
+  .home-container .user-logo {
+    width: 45px;
+    height: 45px;
+    border: 2px solid rgb(37, 37, 38);
+    border-radius: 50px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .home-container .user-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  .home-container .circle-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-left: 10px;
+  }
+  

@@ -1,60 +1,92 @@
 /* Marks.css */
 .marks-container {
     width: 100%;
-  }
-  
-  .navbar {
+    padding: 20px; /* Added padding for better structure */
+}
+
+
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 10px 20px; /* Add padding for spacing */
     border-radius: 10px;
     background-color: #f5f5f5;
-  }
-  
-  .search-bar {
-    width: 50%;
-  }
-  
-  .circle-icon {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add shadow for elevation */
+}
+
+.search-bar {
+    width: 100%; /* Expanded search bar width */
+    max-width: 300px; /* Max width to control size */
+    padding: 10px;
+    border-radius: 20px; /* Rounded corners */
+    border: 1px solid #ccc;
+    transition: all 0.3s ease; /* Smooth transition */
+}
+
+.circle-icon {
     width: 30px;
     height: 30px;
     border-radius: 50%;
     background-color: #ccc;
-  }
-  
-  .filter-section {
+}
+
+/* Filter Section */
+.filter-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-  
-  .filter-section .form-group {
+    gap: 10px; /* Add space between elements */
+}
+
+.filter-section .form-group {
     flex: 1;
     margin-right: 20px;
-  }
-  
-  .filter-section button {
+}
+
+.filter-section button {
     height: 40px;
-  }
-  
-  /* Marks Table */
-  .table th,
-  .table td {
-    text-align: center;
-    vertical-align: middle;
-  }
-  
-  .table-bordered th,
-  .table-bordered td {
-    border: 1px solid #007bff;
-  }
-  
-  .table thead th {
+    padding: 0 20px; /* Add padding for larger click area */
     background-color: #007bff;
     color: white;
-  }
-  
-  .btn-sm {
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.filter-section button:hover {
+    background-color: #0056b3; /* Darker on hover */
+}
+
+/* Marks Table */
+.table th,
+.table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #007bff;
+}
+
+.table thead th {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-sm {
     padding: 5px 10px;
-  }
-  
+}
+
+.table {
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto; /* Center table and add margin */
+    border-collapse: collapse; /* Clean table borders */
+}
+
+.table td input {
+    width: 80%; /* Make inputs inside table responsive */
+    padding: 5px;
+}

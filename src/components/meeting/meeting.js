@@ -1,38 +1,27 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // Import axios for API requests
+import axios from "axios";
 import "./meeting.css";
 import { useNavigate } from "react-router-dom";
 
 const Meeting = () => {
   const navigate = useNavigate();
 
-  const [meetings, setMeetings] = useState([]); // State to store meeting records
+  const [meetings, setMeetings] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState(null);
 
-  // useEffect(() => {
-  //   axios
-  //     .get("http://localhost:8000/getMeetings")
-  //     .then((response) => {
-  //       setMeetings(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching meetings:", error);
-  //     });
-  // }, []);
   useEffect(() => {
     if (localStorage.getItem("auth") !== "true") {
       navigate("/Login");
     } else {
       localStorage.setItem("intendedPage", "/Marks");
-    getMeetings();
+      getMeetings();
     }
-   
   }, []);
 
-  const getMeetings = ()=>{
-     axios
-      .get("http://localhost:8000/getMeetings", {
+  const getMeetings = () => {
+    axios
+      .get("http://localhost:5000/getMeetings", {
         params: { teacherId: 1 },
       })
       .then((response) => {
@@ -41,7 +30,7 @@ const Meeting = () => {
       .catch((error) => {
         console.error("Error fetching meetings:", error);
       });
-  }
+  };
 
   const handleDetailsClick = (meeting) => {
     setSelectedMeeting(meeting);
@@ -55,9 +44,8 @@ const Meeting = () => {
 
   return (
     <div className="meeting-container">
-      <header className="meeting-header">
+      <header className="navbar bg-light">
         <h2>Meeting</h2>
-        <div className="user-avatar"></div>
       </header>
 
       <section className="meeting-requests">
@@ -78,7 +66,7 @@ const Meeting = () => {
       {showModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Details</h3>
+            <h3>Meeting Details</h3>
             <div className="modal-details">
               <div className="modal-field">
                 <label>Meeting Date:</label>

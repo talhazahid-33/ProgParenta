@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 import "../attandance/attandance.css";
 import "./marks.css"
 
-const Attandance = () => {
-
+const Marks = () => {
   const navigate = useNavigate();
 
   const today = new Date();
@@ -25,18 +24,22 @@ const Attandance = () => {
   const [totalMarks, setTotalMarks] = useState("");
   const [testType, setTestType] = useState("");
 
-  const testTypeOptions = ["Monthly","Weekly","FirstTerm", "SecondTerm","Finals"];
+  const testTypeOptions = [
+    "Monthly",
+    "Weekly",
+    "FirstTerm",
+    "SecondTerm",
+    "Finals",
+  ];
+
   useEffect(() => {
-    if(localStorage.getItem("auth") !== "true"){
-      navigate('/Login'); 
+    if (localStorage.getItem("auth") !== "true") {
+      navigate("/Login");
+    } else {
+      localStorage.setItem("intendedPage", "/Marks");
+      fetchClasses();
+      fetchSubjects();
     }
-    else{
-    localStorage.setItem("intendedPage","/Marks");
-    fetchClasses();
-    fetchSubjects();
-    }
-
-
   }, []);
 
   const fetchClasses = async () => {
@@ -47,6 +50,7 @@ const Attandance = () => {
       console.error("Error fetching classes:", error);
     }
   };
+
   const fetchSubjects = async () => {
     try {
       const response = await axios.get("http://localhost:5000/getAllSubjects");
@@ -58,7 +62,6 @@ const Attandance = () => {
   };
 
   const getStudentsByClass = async () => {
-    console.log("Selected Class:", selectedClass);
     if (selectedClass === "" || selectedClass === null) return;
 
     try {
@@ -69,10 +72,7 @@ const Attandance = () => {
         }
       );
       if (response.status === 200) {
-        console.log("Students:", response.data);
         setStudents(response.data);
-      } else {
-        console.log("No students found for this class.");
       }
     } catch (error) {
       console.error("Error fetching students by class:", error);
@@ -80,11 +80,12 @@ const Attandance = () => {
   };
 
   const handleInputChange = (studentId, value) => {
-    if(value>0)
-    setMarks({
-      ...marks,
-      [studentId]: value,
-    });
+    if (value >= 0) {
+      setMarks({
+        ...marks,
+        [studentId]: value,
+      });
+    }
   };
 
   const addMarks = async ({
@@ -107,14 +108,9 @@ const Attandance = () => {
 
       if (response.status === 201) {
         console.log("Marks added successfully:", response.data);
-        return response.data; 
-      } else {
-        console.error("Failed to add marks:", response.data);
-        return null;
       }
     } catch (error) {
       console.error("Error adding marks:", error);
-      return null;
     }
   };
 
@@ -127,45 +123,39 @@ const Attandance = () => {
       alert("Test type and Total Marks are necessary");
       return;
     }
+
     const subject_id = getSubjectIdByName(selectedSubject);
     students.forEach((student) => {
       const newMark = {
         student_id: student.student_id,
         subject_id: subject_id,
         test_type: testType,
-        score:  marks[student.student_id] || 0,
+        score: marks[student.student_id] || 0,
         max_score: totalMarks,
         date: date,
       };
 
       addMarks(newMark);
-
-      console.log({
-        student_id: student.student_id,
-        date: date,
-        marks: marks[student.student_id] || 0,
-      });
     });
     setStudents([]);
     alert("Marks Added Successfully");
   };
-  function getSubjectIdByName( subjectName) {
-    const subject = subjects.find(sub => sub.Name === subjectName);
-    return subject ? subject.subject_id : "90"; 
-}
 
+  function getSubjectIdByName(subjectName) {
+    const subject = subjects.find((sub) => sub.Name === subjectName);
+    return subject ? subject.subject_id : "90";
+  }
 
   return (
-    <div className="attendance-container">
-      <header className="attendance-header">
+    <div className="marks-container">
+      <header className="navbar bg-light">
         <h2>Marks</h2>
         <input type="text" placeholder="Search Here" className="search-bar" />
-        <div className="user-avatar"></div>
       </header>
 
-      <div className="filters">
+      <div className="filter-section">
         <select
-          className="filter"
+          className="form-select"
           value={selectedClass}
           onChange={(e) => setSelectedClass(e.target.value)}
         >
@@ -176,38 +166,47 @@ const Attandance = () => {
             </option>
           ))}
         </select>
+
         <select
-          className="filter"
+          className="form-select"
           value={selectedSubject}
           onChange={(e) => setSelectedSubject(e.target.value)}
         >
-          <option value="">subject</option>
+          <option value="">Subject</option>
           {subjects.map((subject, index) => (
             <option key={index} value={subject.Name}>
               {subject.Name}
             </option>
           ))}
         </select>
+
         <input
           type="date"
-          className="filter"
+          className="form-control"
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />
-        <button className="filter search-btn" onClick={getStudentsByClass}>
+
+        <button
+          className="btn btn-primary shadow-sm"
+          onClick={getStudentsByClass}
+        >
           Search
         </button>
       </div>
+
       <div className="marks-input-row">
         <input
           type="number"
           placeholder="Total Marks"
           value={totalMarks}
-          onChange={(e) =>{if(e.target.value >= 0) setTotalMarks(e.target.value)}}
-          className="marks-input"
+          onChange={(e) => {
+            if (e.target.value >= 0) setTotalMarks(e.target.value);
+          }}
+          className="form-control"
         />
-       <select
-          className="filter"
+        <select
+          className="form-select"
           value={testType}
           onChange={(e) => setTestType(e.target.value)}
         >
@@ -218,11 +217,9 @@ const Attandance = () => {
             </option>
           ))}
         </select>
-        <br />
-        <br />
       </div>
 
-      <table className="attendance-table">
+      <table className="table table-bordered attendance-table">
         <thead>
           <tr>
             <th>Student ID</th>
@@ -237,8 +234,7 @@ const Attandance = () => {
             <tr key={student.student_id}>
               <td>{student.student_id}</td>
               <td>{student.rollno}</td>
-              <td>{`${student.firstname} ${student.lastname}`}</td>
-              
+              <td>{student.Name}</td>
               <td>{totalMarks}</td>
               <td>
                 <input
@@ -247,20 +243,18 @@ const Attandance = () => {
                   onChange={(e) =>
                     handleInputChange(student.student_id, e.target.value)
                   }
-                  placeholder="Enter Marks"
                 />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <br />
-      <br />
-      <button onClick={saveMarks} className="filter search-btn">
+
+      <button className="btn btn-primary shadow-sm" onClick={saveMarks}>
         Save Marks
       </button>
     </div>
   );
 };
 
-export default Attandance;
+export default Marks;

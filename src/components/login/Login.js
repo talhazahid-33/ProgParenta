@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useAuth } from "../../middleware/authContext"; // Import useAuth
+import { useAuth } from "../../middleware/authContext";
 import "./Login.css";
 import admn from "../../Assessts/admin.jpg";
 import logo from "../../Assessts/logo.png";
@@ -8,16 +8,17 @@ import { useDisplayBar } from "../../middleware/sideBarContext";
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth(); 
+  const { login } = useAuth();
 
-  const [error, setError] = useState(""); // State to hold error messages
-  const [email, setEmail] = useState(""); // Change to email
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const {  toggleDisplayBar } = useDisplayBar();
-  useEffect(()=>{
+  
+  useEffect(() => {
     checkSession();
-  },[])
+  }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -27,7 +28,7 @@ function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }), 
+        body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
@@ -45,14 +46,14 @@ function Login() {
     }
   };
 
-  const checkSession =()=>{
+  const checkSession = () => {
     const intendedPage = localStorage.getItem("intendedPage");
-    const auth = localStorage.getItem('auth');
-    if(auth === "true" && intendedPage){
-      console.log(intendedPage)
+    const auth = localStorage.getItem("auth");
+    if (auth === "true" && intendedPage) {
+      console.log(intendedPage);
       navigate(intendedPage);
     }
-  }
+  };
 
   return (
     <div className="login-container">

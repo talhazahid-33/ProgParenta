@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "./attandance.css";
 
 const Attandance = () => {
-  
   const navigate = useNavigate();
   const today = new Date();
   const year = today.getFullYear();
@@ -13,26 +11,18 @@ const Attandance = () => {
   const day = String(today.getDate()).padStart(2, "0");
   const formattedDate = `${year}-${month}-${day}`;
 
-
-
-
-  
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
   const [date, setDate] = useState(formattedDate);
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
 
-  const [newStudent, setNewStudent] = useState();
-
   useEffect(() => {
-    if(localStorage.getItem("auth") !== "true"){
-      navigate('/Login'); 
-
+    if (localStorage.getItem("auth") !== "true") {
+      navigate("/Login");
     }
-    localStorage.setItem("intendedPage","/attendance");
+    localStorage.setItem("intendedPage", "/attendance");
     fetchClasses();
-
   }, []);
 
   const fetchClasses = async () => {
@@ -45,7 +35,6 @@ const Attandance = () => {
   };
 
   const getStudentsByClass = async () => {
-    console.log("Selected Class:", selectedClass);
     if (selectedClass === "" || selectedClass === null) return;
 
     try {
@@ -56,7 +45,6 @@ const Attandance = () => {
         }
       );
       if (response.status === 200) {
-        console.log("Students:", response.data);
         setStudents(response.data);
       } else {
         console.log("No students found for this class.");
@@ -69,13 +57,13 @@ const Attandance = () => {
   const handleCheckboxChange = (studentId) => {
     setAttendance({
       ...attendance,
-      [studentId]: !attendance[studentId], // Toggle attendance checkbox for each student
+      [studentId]: !attendance[studentId],
     });
   };
 
   const addAttendance = async (student) => {
     const studentId = student.student_id;
-    const status = student.present ? "present" : "absent";
+    const status = attendance[student.student_id] ? "present" : "absent";
     try {
       const response = await axios.post("http://localhost:5000/addAttendance", {
         student_id: studentId,
@@ -100,23 +88,18 @@ const Attandance = () => {
     }
     students.forEach((student) => {
       addAttendance(student);
-      console.log({
-        student_id: student.student_id,
-        date: date,
-        present: attendance[student.student_id] || false,
-      });
     });
-    setStudents([]);
     alert("Attendance Added Successfully");
+    setStudents([]);
   };
+
   return (
     <div className="attendance-container">
-      <header className="attendance-header">
+      <header className="navbar bg-light">
         <h2>Attendance</h2>
         <input type="text" placeholder="Search Here" className="search-bar" />
-        <div className="user-avatar"></div>
       </header>
-
+      <br></br>
       <div className="filters">
         <select
           className="filter"
@@ -172,8 +155,8 @@ const Attandance = () => {
       </table>
       <br />
       <br />
-      <button onClick={saveAttendance} className="filter search-btn">
-        Save Attendance{" "}
+      <button onClick={saveAttendance} className="filter save-btn">
+        Save Attendance
       </button>
     </div>
   );

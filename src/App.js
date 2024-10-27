@@ -14,7 +14,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { DisplayBarProvider } from "./middleware/sideBarContext";
 
 function App() {
-  
+
 
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("auth")=== "true");
 
@@ -35,8 +35,9 @@ function App() {
   
   return (
     <div className="d-flex">
+
       <DisplayBarProvider>
-      {isAuthenticated && <Sidebar />}{" "}
+      {isAuthenticated && <Sidebar />}
       <div className="content p-4" style={{ width: "100%" }}>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -73,7 +74,7 @@ function App() {
             }
           />
           <Route
-            path="/Attendance" 
+            path="/Attendance"
             element={
               <PrivateRoute>
                 <Attendance />

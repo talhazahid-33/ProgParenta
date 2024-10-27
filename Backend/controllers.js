@@ -24,15 +24,17 @@ exports.login = async (req, res) => {
 
 
 exports.getMeetings = async (req, res) => {
-  const { teacher_id } = req.body;
-
-  if (!teacher_id) {
-    return res.status(400).json({ error: "Teacher ID is required" });
+  console.log("getMeetings ",req.body);
+  const  teacher_email = req.body.email;
+  console.log("getMeetings ",teacher_email);
+  
+  if (!teacher_email) {
+    return res.status(400).json({ error: "Teacher email is required" });
   }
 
   try {
-    const query = "SELECT * FROM Meeting WHERE teacher_id = $1";
-    const result = await pool.query(query, [teacher_id]);
+    const query = 'SELECT * FROM public."meetingRequest" WHERE teacher_email = $1';
+ const result = await pool.query(query, [teacher_email]);
 
     if (result.rows.length > 0) {
       res.status(200).json(result.rows);
@@ -44,6 +46,37 @@ exports.getMeetings = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+exports.updateMeeting = async (req, res) => {
+  console.log("updateMeeting request body:", req.body);
+
+  const { status, time, meeting_id } = req.body;
+
+  if (!meeting_id || !status || !time) {
+    return res.status(400).json({ error: "Meeting ID, status, and time are required" });
+  }
+
+  try {
+    const query = `
+      UPDATE public."meetingRequest" 
+      SET status = $1, "time" = $2
+      WHERE meeting_id = $3
+      RETURNING *;
+    `;
+
+    const result = await pool.query(query, [status, time, meeting_id]);
+
+    if (result.rowCount > 0) {
+      res.status(200).json({ message: "Meeting updated successfully", meeting: result.rows[0] });
+    } else {
+      res.status(404).json({ message: "Meeting not found with the provided ID" });
+    }
+  } catch (err) {
+    console.error("Error updating meeting:", err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 
 exports.deleteMeeting = async (req, res) => {
   const { meeting_id } = req.body;
@@ -69,6 +102,11 @@ exports.deleteMeeting = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+
+
+
+
 
 exports.addAttendance = async (req, res) => {
   console.log(req.body);
@@ -124,6 +162,29 @@ exports.getStudentsByClass = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+exports.getStudentById = async (req, res) => {
+  const { student_id } = req.body;
+
+  if (!student_id) {
+    return res.status(400).json({ error: "Student ID is required" });
+  }
+
+  try {
+    const query = "SELECT * FROM public.student WHERE student_id = $1";
+    const result = await pool.query(query, [student_id]);
+
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).json({ message: "Student not found with this ID" });
+    }
+  } catch (err) {
+    console.error("Error fetching student by ID:", err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 
 exports.getAllClasses = async (req, res) => {
   try {

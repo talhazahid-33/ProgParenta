@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios"; // Import axios for API requests
 import "./meeting.css";
 import { useNavigate } from "react-router-dom";
+import AlertDialog from "./studentData";
 
 const Meeting = () => {
   const navigate = useNavigate();
-
+  const data = JSON.parse(localStorage.getItem("teacher"));
   const [meetings, setMeetings] = useState([]); // State to store meeting records
   const [showModal, setShowModal] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState(null);
+  const [time, setTime] = useState("");
+  const [student, setStudent] = useState();
 
   // useEffect(() => {
   //   axios
@@ -25,23 +28,24 @@ const Meeting = () => {
       navigate("/Login");
     } else {
       localStorage.setItem("intendedPage", "/Marks");
-    getMeetings();
+      getMeetings();
     }
-   
   }, []);
 
-  const getMeetings = ()=>{
-     axios
-      .get("http://localhost:8000/getMeetings", {
-        params: { teacherId: 1 },
+  const getMeetings = () => {
+    axios
+      .post("http://localhost:5000/getMeetings", {
+        email: data.email,
       })
       .then((response) => {
+        console.log(response.data);
+
         setMeetings(response.data);
       })
       .catch((error) => {
         console.error("Error fetching meetings:", error);
       });
-  }
+  };
 
   const handleDetailsClick = (meeting) => {
     setSelectedMeeting(meeting);
@@ -52,6 +56,40 @@ const Meeting = () => {
     setShowModal(false);
     setSelectedMeeting(null);
   };
+
+  const approveMeeting = () => {
+    console.log(time);
+    if (time === "") {
+      alert("set time for meeting");
+      return;
+    }
+    updateMeeting("Approve");
+    closeModal();
+  };
+
+  const rejectMeeting = () => {
+    updateMeeting("Reject");
+    closeModal();
+  };
+  const updateMeeting = async (status) => {
+    try {
+      const response = await axios.post("http://localhost:5000/updateMeeting", {
+        meeting_id: selectedMeeting.meeting_id,
+        status: status,
+        time: time,
+      });
+
+      if (response.status === 200) {
+        console.log("Meeting updated successfully:", response.data);
+      } else {
+        console.error("Error updating meeting:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error making the API request:", error.message);
+    }
+  };
+
+ 
 
   return (
     <div className="meeting-container">
@@ -64,13 +102,17 @@ const Meeting = () => {
         <h3>Meeting Requests:</h3>
         {meetings.map((meeting) => (
           <div className="meeting-request" key={meeting.meeting_id}>
-            <span>{meeting.meeting_topic}</span>
-            <button
-              className="details-button"
-              onClick={() => handleDetailsClick(meeting)}
-            >
-              Details
-            </button>
+            <span>{meeting.subject}</span>
+            <div>
+              
+              <AlertDialog student_id={meeting.student_id}/>
+              <button
+                className="details-button"
+                onClick={() => handleDetailsClick(meeting)}
+              >
+                Details
+              </button>
+            </div>
           </div>
         ))}
       </section>
@@ -83,26 +125,18 @@ const Meeting = () => {
               <div className="modal-field">
                 <label>Meeting Date:</label>
                 <input
-                  type="text"
-                  value={selectedMeeting.meeting_date}
-                  disabled
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
                 />
               </div>
               <div className="modal-field">
                 <label>Meeting Topic:</label>
-                <input
-                  type="text"
-                  value={selectedMeeting.meeting_topic}
-                  disabled
-                />
+                <input type="text" value={selectedMeeting.subject} disabled />
               </div>
               <div className="modal-field">
                 <label>Teacher ID:</label>
-                <input
-                  type="text"
-                  value={selectedMeeting.teacher_id}
-                  disabled
-                />
+                <input type="text" value={selectedMeeting.teacher} disabled />
               </div>
               <div className="modal-field">
                 <label>Student ID:</label>
@@ -114,12 +148,16 @@ const Meeting = () => {
               </div>
               <div className="modal-field">
                 <label>Remarks:</label>
-                <textarea value={selectedMeeting.remarks} disabled />
+                <textarea value={selectedMeeting.message} disabled />
               </div>
             </div>
             <div className="modal-actions">
-              <button className="reject-button">Reject</button>
-              <button className="approve-button">Approve</button>
+              <button className="reject-button" onClick={rejectMeeting}>
+                Reject
+              </button>
+              <button className="approve-button" onClick={approveMeeting}>
+                Approve
+              </button>
             </div>
           </div>
         </div>

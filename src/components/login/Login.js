@@ -4,6 +4,7 @@ import { useAuth } from "../../middleware/authContext"; // Import useAuth
 import "./Login.css";
 import admn from "../../Assessts/admin.jpg";
 import logo from "../../Assessts/logo.png";
+import { useDisplayBar } from "../../middleware/sideBarContext";
 
 function Login() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ function Login() {
   const [email, setEmail] = useState(""); // Change to email
   const [password, setPassword] = useState("");
 
+  const {  toggleDisplayBar } = useDisplayBar();
   useEffect(()=>{
     checkSession();
   },[])
@@ -33,7 +35,10 @@ function Login() {
       }
 
       const data = await response.json();
+      console.log(data.teacher);
+      localStorage.setItem("teacher",JSON.stringify(data.teacher));
       login();
+      toggleDisplayBar(true);
       navigate("/");
     } catch (error) {
       setError(error.message);

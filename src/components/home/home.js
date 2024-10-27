@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import "./home.css"; // Import custom CSS for Home page
 
 import { useNavigate } from 'react-router-dom';
+import PersonalInfo from "./Personal";
+import ContactInfo from "./Contact";
 
 function Home() {
   
@@ -33,7 +35,7 @@ function Home() {
         </div>
         <div className="section-body p-3 bg-light">
           {" "}
-          {/* Content goes here */}{" "}
+          <PersonalInfo/>
         </div>
       </div>
 
@@ -43,7 +45,7 @@ function Home() {
         </div>
         <div className="section-body p-3 bg-light">
           {" "}
-          {/* Content goes here */}{" "}
+          <ContactInfo/>
         </div>
       </div>
     </div>

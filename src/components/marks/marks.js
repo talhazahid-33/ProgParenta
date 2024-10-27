@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 
 import "../attandance/attandance.css";
+import "./marks.css"
 
 const Attandance = () => {
 
